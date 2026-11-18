@@ -1,4 +1,4 @@
-# cdfr2023 teleop (ESP32-S3)
+# CDFR2027 robot secondaire — remote (ESP32-S3)
 
 Phone remote for the cdfr2023 base roulante: an ESP32-S3 serves a web page over Wi-Fi and drives the STM32 control board over I2C. Step buttons: ▲▼ 100 mm, ◀▶ 15°, STOP.
 
