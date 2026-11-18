@@ -10,10 +10,18 @@ The STM32 pins have no pull-ups; the old Pi supplied them. If the control board 
 
 ## Build & flash
 
-Clone `librairie-commune` next to this repo (`../librairie-commune`), at the same commit used to flash the STM32 from `cdfr2023-programme-base-roulante-asservissment` (otherwise a version-mismatch warning is logged).
+Clone `librairie-commune` next to this repo, at the pinned commit:
 
 ```
-. $IDF_PATH/export.sh && idf.py set-target esp32s3 && idf.py -p /dev/ttyACM0 flash monitor
+git clone https://github.com/robotronik/librairie-commune ../librairie-commune && git -C ../librairie-commune checkout 11d32bb
+```
+
+The STM32 (`cdfr2023-programme-base-roulante-asservissment`) must be flashed against the same commit, otherwise a version-mismatch warning is logged.
+
+Activate ESP-IDF v6.0.2 first, e.g. `. ~/esp/esp-idf/export.sh` (path depends on your install).
+
+```
+idf.py set-target esp32s3 && idf.py -p /dev/ttyACM0 flash monitor
 ```
 
 Tested with ESP-IDF v6.0.2.
@@ -34,7 +42,7 @@ g++ -std=c++17 -Wall -Wextra -Imain test/test_teleop.cpp -o /tmp/t && /tmp/t
 
 - [ ] Phone joins `cdfr2023-teleop`, `http://192.168.4.1/` loads and shows "Connected".
 - [ ] Each arrow turns the wheels the right way.
-- [ ] Five fast ▲ taps give one smooth 500 mm run.
+- [ ] Five fast ▲ taps move 500 mm in total.
 - [ ] ▲ ×5 then STOP mid-run: wheels stop, the next ▲ moves 100 mm from that point.
 - [ ] ▲ ×5 then turn off the phone's Wi-Fi: wheels stop within about 0.3 s.
 - [ ] A second phone can't join the network.
