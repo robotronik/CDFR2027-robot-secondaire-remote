@@ -45,10 +45,10 @@ static esp_err_t ws_handler(httpd_req_t* req) {
     if (req->method == HTTP_GET) return ESP_OK;  // handshake
     httpd_ws_frame_t f = {};
     esp_err_t err = httpd_ws_recv_frame(req, &f, 0);  // length only
-    if (err != ESP_OK || f.len != 1) return ESP_OK;   // anything but 1 byte is dropped
+    if (err != ESP_OK || f.len != 1) return ESP_FAIL;  // payload stays unread: close the socket, else the stream desyncs
     uint8_t c;
     f.payload = &c;
-    if (httpd_ws_recv_frame(req, &f, 1) != ESP_OK) return ESP_OK;
+    if (httpd_ws_recv_frame(req, &f, 1) != ESP_OK) return ESP_FAIL;
     xQueueSend(cmd_q, &c, 0);
     return ESP_OK;
 }
