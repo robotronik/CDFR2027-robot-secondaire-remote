@@ -26,6 +26,8 @@ public:
         if (err != ESP_OK) { ESP_LOGE(TAG, "add device: %s", esp_err_to_name(err)); dev_ = nullptr; }
     }
 
+    bool ok = false;  // result of the last transfer
+
 private:
     static constexpr const char* TAG = "asserv_i2c";
     static constexpr int RETRIES = 3;
@@ -34,6 +36,7 @@ private:
     i2c_master_dev_handle_t dev_ = nullptr;
 
     void I2cSendData(uint8_t command, uint8_t* data, int length) override {
+        ok = false;
         if (!dev_) return;
         uint8_t buf[64];
         if (length < 0 || length + 1 > (int)sizeof(buf)) { ESP_LOGE(TAG, "send %u: bad length %d", command, length); return; }
@@ -42,6 +45,7 @@ private:
         esp_err_t err = ESP_FAIL;
         for (int i = 0; i < RETRIES && err != ESP_OK; i++)
             err = i2c_master_transmit(dev_, buf, length + 1, TIMEOUT_MS);
+        ok = err == ESP_OK;
         if (err != ESP_OK) ESP_LOGE(TAG, "send cmd %u failed: %s", command, esp_err_to_name(err));
     }
 
@@ -55,6 +59,7 @@ private:
                 err = i2c_master_receive(dev_, data, length, TIMEOUT_MS);
             }
         }
+        ok = err == ESP_OK;
         if (err != ESP_OK) {
             ESP_LOGE(TAG, "recv cmd %u failed: %s", command, esp_err_to_name(err));
             memset(data, 0, length);

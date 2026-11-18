@@ -8,8 +8,8 @@ string(SUBSTRING "${SHA}" 4 2 SHA3)
 string(SUBSTRING "${SHA}" 6 2 SHA4)
 
 idf_component_register(
-    SRCS main.cpp ../../librairie-commune/master/src/asservissement_interface.cpp
-    INCLUDE_DIRS . ../../librairie-commune/master/include ../../librairie-commune/common/include
+    SRCS main.cpp ${LIB}/master/src/asservissement_interface.cpp
+    INCLUDE_DIRS . ${LIB}/master/include ${LIB}/common/include
     REQUIRES esp_driver_i2c esp_wifi esp_netif esp_event nvs_flash esp_http_server esp_timer
     EMBED_TXTFILES index.html)
 

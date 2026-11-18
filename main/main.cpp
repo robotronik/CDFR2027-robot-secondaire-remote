@@ -85,6 +85,7 @@ extern "C" void app_main(void) {
     if (!robot.interface_version_matches())
         ESP_LOGW(TAG, "asserv version mismatch: reflash the STM32 from cdfr2023-programme-base-roulante-asservissment against the same ../librairie-commune");
 
+    robot.stop();  // ESP reset mid-move: STM32 may still be running its queue
     robot.set_coordinates(0, 0, 0);
     int16_t x, y, theta;
     robot.get_coordinates(x, y, theta);
@@ -99,7 +100,10 @@ extern "C" void app_main(void) {
     int64_t last_rx = 0;
     auto stop_all = [&] {
         robot.stop();
-        robot.get_coordinates(target.x, target.y, target.theta);
+        if (!robot.ok) return;  // stay armed: the deadman retries every loop
+        Pose p;
+        robot.get_coordinates(p.x, p.y, p.theta);
+        if (robot.ok) target = p;  // keep old frame rather than (0,0,0)
         armed = false;
     };
     for (;;) {
@@ -110,6 +114,7 @@ extern "C" void app_main(void) {
                 case 'F':
                 case 'B':
                     target = next_target(target, c);
+                    if (!armed) robot.set_motor_state(true);  // STM32 boots/resets with motors disabled
                     robot.go_to_point(target.x, target.y, Rotation::SHORTEST,
                                       c == 'F' ? Direction::FORWARD : Direction::BACKWARD);
                     armed = true;
@@ -117,6 +122,7 @@ extern "C" void app_main(void) {
                 case 'L':
                 case 'R':
                     target = next_target(target, c);
+                    if (!armed) robot.set_motor_state(true);
                     robot.consigne_angulaire(target.theta, Rotation::SHORTEST);
                     armed = true;
                     break;
