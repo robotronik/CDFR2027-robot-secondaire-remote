@@ -1,10 +1,10 @@
-# CDFR2027 robot secondaire — remote (ESP32-S3)
+# CDFR2027 robot secondaire — remote (ESP32)
 
-Phone remote for the cdfr2023 base roulante: an ESP32-S3 serves a web page over Wi-Fi and drives the STM32 control board over I2C. Step buttons: ▲▼ 100 mm, ◀▶ 15°, STOP.
+Phone remote for the cdfr2023 base roulante: an ESP32 (NodeMCU ESP-32S, ESP32-WROOM-32) serves a web page over Wi-Fi and drives the STM32 control board over I2C. Step buttons: ▲▼ 100 mm, ◀▶ 15°, STOP.
 
 ## Wiring
 
-ESP32-S3 GPIO8 (SDA) → STM32 PB7, GPIO9 (SCL) → PB6, GND ↔ GND.
+ESP32 GPIO21 (SDA) → STM32 PB7, GPIO22 (SCL) → PB6, GND ↔ GND.
 
 The STM32 pins have no pull-ups; the old Pi supplied them. If the control board has none, add 4.7 kΩ from SDA and SCL to 3.3 V (the ESP internal pull-ups are too weak to rely on).
 
@@ -21,7 +21,7 @@ The STM32 (`cdfr2023-programme-base-roulante-asservissment`) must be flashed aga
 Activate ESP-IDF v6.0.2 first, e.g. `. ~/esp/esp-idf/export.sh` (path depends on your install).
 
 ```
-idf.py set-target esp32s3 && idf.py -p /dev/ttyACM0 flash monitor
+idf.py set-target esp32 && idf.py -p /dev/ttyUSB0 flash monitor
 ```
 
 Tested with ESP-IDF v6.0.2.

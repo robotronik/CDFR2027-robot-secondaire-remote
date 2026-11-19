@@ -73,7 +73,7 @@ static void start_http() {
 }
 
 extern "C" void app_main(void) {
-    static AsservI2C robot(GPIO_NUM_8, GPIO_NUM_9);
+    static AsservI2C robot(GPIO_NUM_21, GPIO_NUM_22);
 
     esp_err_t err = nvs_flash_init();
     if (err == ESP_ERR_NVS_NO_FREE_PAGES || err == ESP_ERR_NVS_NEW_VERSION_FOUND) {
